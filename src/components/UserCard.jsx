@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, Typography, Avatar, CardActions, Button } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import { red } from '@mui/material/colors';
 import CloseIcon from '@mui/icons-material/Close';
 import './SelectableCard.css';
 
@@ -41,7 +40,7 @@ const UserCard = ({ user, removeUser, isSelected, onSelect }) => {
         >
             <CardHeader
                 avatar={
-                    <Avatar sx={{ bgcolor: red[500] }}>
+                    <Avatar sx={{ backgroundColor: '#fece00', color: '#000' }}>
                         {initials}
                     </Avatar>
                 }
