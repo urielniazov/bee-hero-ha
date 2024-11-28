@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Drawer, Container, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2'
 import { observer } from 'mobx-react-lite';
@@ -8,16 +9,26 @@ import PostCard from './PostCard';
 import PostEdit from './PostEdit';
 
 const Dashboard = observer(() => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const { userStore, postStore } = rootStore;
   const { users, loading, error } = userStore;
   const { posts, loading: postLoading, error: postError } = postStore;
 
-  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedUserId, setSelectedUserId] = useState(searchParams.get('userId'));
   const [selectedPostId, setSelectedPostId] = useState(null);
 
   useEffect(() => {
+    postStore.clearPosts();
     userStore.fetchUsers();
+    const userIdInParams = searchParams.get('userId');
+    if (userIdInParams) {
+      const userId = parseInt(userIdInParams)
+      setSelectedUserId(userId);
+      postStore.fetchPosts(userId);
+    }
+
   }, []);
+
 
   const removeUser = (userId) => {
     userStore.removeUser(userId);
@@ -35,10 +46,12 @@ const Dashboard = observer(() => {
     if (selectedUserId === userId) {
       setSelectedUserId(null);
       postStore.clearPosts();
+      setSearchParams({ });
     }
     else {
       setSelectedUserId(userId);
       postStore.fetchPosts(userId);
+      setSearchParams({ userId });
     }
   };
 
@@ -59,7 +72,6 @@ const Dashboard = observer(() => {
   }
 
   if (error) {
-    // todo: test error
     return <Typography variant="h6" color="error" align="center">
       Error: {error}
     </Typography>;
@@ -81,8 +93,7 @@ const Dashboard = observer(() => {
 
       {selectedUserId && (
         <Container sx={{ mt: 4 }}>
-          <Typography variant="h5">User {selectedUserId} posts</Typography>
-
+          <Typography variant="h5">{users.find(user => user.id === selectedUserId).username}'s posts</Typography>
           {postLoading ? (
             <Typography variant="body1" align="center">Loading posts...</Typography>
           ) : postError ? (
@@ -107,7 +118,7 @@ const Dashboard = observer(() => {
             onClose={closePostEdit}
             sx={{ zIndex: 1300 }}
           >
-            {selectedPostId&& <PostEdit
+            {selectedPostId && <PostEdit
               post={postStore.getPostById(selectedPostId)}
               onClose={closePostEdit}
               onSave={savePost}
