@@ -31,7 +31,8 @@ const UserCard = ({ user, removeUser, isSelected, onSelect }) => {
 
     const handleCoordinatesClick = (e) => {
         e.stopPropagation();
-        //todo make the navigate work
+        const data = { lng, lat };
+        navigate("/map", { state: data });
     };
     return (
         <Card

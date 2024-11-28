@@ -1,12 +1,12 @@
 import React from 'react';
+import { useLocation } from "react-router-dom";
 // import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 // import 'leaflet/dist/leaflet.css'; // Import Leaflet styles
 
 const MapPage = () => {
-    // const {state} = useLocation();
-    // const { lat, lng } = state;
-
-    return(<div>hello</div>);
+    const location = useLocation();
+    const {lat, lng} = location.state;
+    return(<div>{lat},{lng}</div>);
     // return (
     //     <div style={{ height: '100vh', width: '100%' }}>
     //         <MapContainer center={[lat, lng]} zoom={13} style={{ height: "100%", width: "100%" }}>
